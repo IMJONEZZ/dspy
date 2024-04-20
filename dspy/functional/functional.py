@@ -128,14 +128,22 @@ class TypedPredictor(dspy.Module):
         )(json_schema=schema).json_object
         # We use the model_validate_json method to make sure the example is valid
         try:
-            unwrapped_json = _unwrap_json(json_object)
+            unwrapped_json_str = _unwrap_json(json_object)
+
+            print(f"unwrapped: {unwrapped_json_str}")
+            print(f"unwrapped type: {type(unwrapped_json_str)}")
+
+            unwrapped_json = ujson.loads(unwrapped_json_str)
+
+            print(f"unwrapped json: {unwrapped_json_str}")
+            print(f"unwrapped json type: {type(unwrapped_json_str)}")
 
             # Check if the unwrapped JSON is an array
             if isinstance(unwrapped_json, list):
                 for item in unwrapped_json:
                     type_.model_validate_json(item)
             else:
-                type_.model_validate_json(unwrapped_json)
+                type_.model_validate_json(unwrapped_json_str)
         except (pydantic.ValidationError, ValueError):
             return ""  # Unable to make an example
         return json_object
