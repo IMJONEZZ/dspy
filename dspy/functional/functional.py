@@ -420,6 +420,4 @@ def _unwrap_json(output):
         if not output.endswith("```"):
             raise ValueError("Don't write anything after the final json ```")
         output = output[7:-3].strip()
-    if not output.startswith("{") or not output.endswith("}"):
-        raise ValueError("json output should start and end with { and }")
     return ujson.dumps(ujson.loads(output))  # ujson is a bit more robust than the standard json
