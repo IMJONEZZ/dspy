@@ -128,7 +128,14 @@ class TypedPredictor(dspy.Module):
         )(json_schema=schema).json_object
         # We use the model_validate_json method to make sure the example is valid
         try:
-            type_.model_validate_json(_unwrap_json(json_object))
+            unwrapped_json = _unwrap_json(json_object)
+
+            # Check if the unwrapped JSON is an array
+            if isinstance(unwrapped_json, list):
+                for item in unwrapped_json:
+                    type_.model_validate_json(item)
+            else:
+                type_.model_validate_json(unwrapped_json)
         except (pydantic.ValidationError, ValueError):
             return ""  # Unable to make an example
         return json_object
@@ -413,4 +420,6 @@ def _unwrap_json(output):
         if not output.endswith("```"):
             raise ValueError("Don't write anything after the final json ```")
         output = output[7:-3].strip()
+    if not output.startswith("{") or not output.endswith("}"):
+        raise ValueError("json output should start and end with { and }")
     return ujson.dumps(ujson.loads(output))  # ujson is a bit more robust than the standard json
