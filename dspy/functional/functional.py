@@ -317,7 +317,14 @@ class TypedPredictor(dspy.Module):
                     try:
                         value = completion[name]
                         parser = field.json_schema_extra.get("parser", lambda x: x)
+
+                        print("ok 1")
+
+                        print(f"parser: {parser}")
+
                         parsed[name] = parser(value)
+
+                        print("ok 2")
                     except (pydantic.ValidationError, ValueError) as e:
                         errors[name] = self._format_error(
                             e,
