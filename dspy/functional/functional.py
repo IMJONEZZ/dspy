@@ -320,7 +320,8 @@ class TypedPredictor(dspy.Module):
 
                         print("ok 1")
 
-                        print(f"parser: {parser}")
+                        print(f"value type: {type(value)}")
+                        print(f"value: {value}")
 
                         parsed[name] = parser(value)
 
