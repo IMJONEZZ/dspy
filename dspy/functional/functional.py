@@ -129,14 +129,7 @@ class TypedPredictor(dspy.Module):
         # We use the model_validate_json method to make sure the example is valid
         try:
             unwrapped_json_str = _unwrap_json(json_object)
-
-            print(f"unwrapped: {unwrapped_json_str}")
-            print(f"unwrapped type: {type(unwrapped_json_str)}")
-
             unwrapped_json = ujson.loads(unwrapped_json_str)
-
-            print(f"unwrapped json: {unwrapped_json}")
-            print(f"unwrapped json type: {type(unwrapped_json)}")
 
             # Check if the unwrapped JSON is an array
             if isinstance(unwrapped_json, list):
@@ -253,7 +246,7 @@ class TypedPredictor(dspy.Module):
                         schema = json.dumps(type_.model_json_schema())
                 else:
 
-                    from_json = lambda x, type_=type_: custom_from_json(x, type_)
+                    from_json = lambda x, type_=type_: from_json_complex(x, type_)
 
                     # Anything else we wrap in a pydantic object
                     if not (
