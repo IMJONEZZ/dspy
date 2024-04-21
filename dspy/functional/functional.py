@@ -319,6 +319,9 @@ class TypedPredictor(dspy.Module):
                         parser = field.json_schema_extra.get("parser", lambda x: x)
 
                         print("ok 1")
+                        print(name)
+                        print(field)
+                        print(field.json_schema_extra)
 
                         print(f"value type: {type(value)}")
                         print(f"value: {value}")
