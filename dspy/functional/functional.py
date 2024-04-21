@@ -252,6 +252,9 @@ class TypedPredictor(dspy.Module):
                         from_json = lambda x, type_=type_: type_.model_validate_json(x)
                         schema = json.dumps(type_.model_json_schema())
                 else:
+
+                    from_json = lambda x, type_=type_: custom_from_json(x, type_)
+
                     # Anything else we wrap in a pydantic object
                     if not (
                         inspect.isclass(type_)
@@ -274,7 +277,7 @@ class TypedPredictor(dspy.Module):
                         desc=field.json_schema_extra.get("desc", "")
                         + (". Respond with a single JSON object. JSON Schema: " + schema),
                         format=lambda x, to_json=to_json: (x if isinstance(x, str) else to_json(x)),
-                        parser=lambda x, from_json=from_json: from_json(_unwrap_json(x)),
+                        parser=lambda x, from_json=from_json: from_json(x),
                         type_=type_,
                     )
             else:  # If input field
@@ -440,3 +443,11 @@ def _unwrap_json(output):
             raise ValueError("Don't write anything after the final json ```")
         output = output[7:-3].strip()
     return ujson.dumps(ujson.loads(output))  # ujson is a bit more robust than the standard json
+
+def from_json_complex(json_str, type_):
+    unwrapped_json_str = _unwrap_json(json_str)
+    unwrapped_json = ujson.loads(unwrapped_json_str)
+    if isinstance(unwrapped_json, list):
+        return [type_.model_validate_json(item) for item in unwrapped_json]
+    else:
+        return type_.model_validate_json(unwrapped_json)
