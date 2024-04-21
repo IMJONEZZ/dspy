@@ -170,6 +170,9 @@ class BootstrapFewShot(Teleprompter):
                 else:
                     success = True
         except Exception as e:
+
+            traceback.print_exc()
+
             success = False
             with self.error_lock:
                 self.error_count += 1

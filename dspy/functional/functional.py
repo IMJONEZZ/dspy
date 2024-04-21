@@ -135,8 +135,8 @@ class TypedPredictor(dspy.Module):
 
             unwrapped_json = ujson.loads(unwrapped_json_str)
 
-            print(f"unwrapped json: {unwrapped_json_str}")
-            print(f"unwrapped json type: {type(unwrapped_json_str)}")
+            print(f"unwrapped json: {unwrapped_json}")
+            print(f"unwrapped json type: {type(unwrapped_json)}")
 
             # Check if the unwrapped JSON is an array
             if isinstance(unwrapped_json, list):
